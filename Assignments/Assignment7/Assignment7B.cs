@@ -4,140 +4,170 @@ class Assignment7B
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("[X PixMap Editor]");
-        string[] colorMapArray = new string[4];
-        string[,] imageArray;
-        int image_width;
-        int image_height;
-        for (int i = 0; i < 4; i++)
+        try
         {
-            Console.Write($"Enter a hexadecimal color for color {i+1}: ");
-            string hexColorValue = Console.ReadLine();
-            Console.Write($"Enter a letter to represent this color: ");
-            string letterValue = Console.ReadLine();
-            colorMapArray[i] =$"\"{letterValue}\",\"#{hexColorValue}\""; 
-        }
-        Console.WriteLine();
-        Console.Write($"Enter a width: ");
-        image_width= Convert.ToInt32(Console.ReadLine());
-        Console.Write($"Enter a height: ");
-        image_height = Convert.ToInt32(Console.ReadLine());
-        imageArray = new string[image_height,image_width];
-        for (int i = 0; i < image_height; i++)
-        {
-            for (int j = 0; j < image_width; j++)
-            {
-                imageArray[i,j] = colorMapArray[0].Split(',')[0];
-            }
-        }
-        int pickOption = 0;
-        while(pickOption!=4)
-        {
-            Console.WriteLine("Options:");
-            Console.WriteLine("1) Set a color");
-            Console.WriteLine("2) Replace colors");
-            Console.WriteLine("3) Print X PixMap");
-            Console.WriteLine("4) Quit");
-            Console.Write("Choice: ");
-            pickOption = Convert.ToInt32(Console.ReadLine());
-            switch (pickOption)
-            {
-                case 1:
-                    Console.Write("Enter a row index: ");
-                    int rowValue = Convert.ToInt32(Console.ReadLine());
-                    Console.Write("Enter a column index: ");
-                    int colValue = Convert.ToInt32(Console.ReadLine());
-                    Console.Write("Enter a color: ");
-                    string setColorValue = Console.ReadLine();
-                    setColor(setColorValue, colValue, rowValue);
-                    break;
-                case 2:
-                    Console.Write("Enter the color to replace: ");
-                    string replaceThisColor = Console.ReadLine();
-                    Console.Write("Enter the new color: ");
-                    string newColor = Console.ReadLine();
-                    replaceColor(imageArray, image_height, image_width, replaceThisColor, newColor);
-                    break;
-                case 3:
-                    printXPixMap(colorMapArray,imageArray,image_width,image_height);
-                    break;
-                case 4:
-                    break;
-            }
+            int Width, Height, Depth , XPos, YPos ,ZPos;
 
-        }
-        Console.WriteLine("[Closing...]");
-    }
+            Console.WriteLine("[3D Collision Tester]");
+            Console.WriteLine("Create Player 1");
+            Console.Write("Enter X position: ");
+            XPos = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter Y position: ");
+            YPos = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter Z position: ");
+            ZPos = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter Player Hitbox Width: ");
+            Width = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter Player Hitbox Height: ");
+            Height = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter Player Hitbox Depth: ");
+            Depth = Convert.ToInt32(Console.ReadLine());
 
-    public static void setColor(string setColorValue, int image_height, int image_width)
-    {
-       
-        //if (checkIfValidColor(inputColor))
-        //{
-        //image[image_width][image_width - 1] = inputColor;
-        //    System.out.println("Color updated!");
-        //}
-        //else
-        //{
-        //    System.out.println("Invalid color!");
-        //}
-    }
 
-    public static void replaceColor(string[,] imageArray,int image_height, int image_width,
-        string replaceColor, string newColor)
-    {
-        for (int i = 0; i < image_height; i++)
-        {
-            for (int j = 0; j < image_width; j++)
+            Player playerOne = new Player(Width, Height, Depth, XPos, YPos, ZPos);
+
+            Console.WriteLine("Create Player 2");
+            Console.Write("Enter X position: ");
+            XPos = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter Y position: ");
+            YPos = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter Z position: ");
+            ZPos = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter Player Hitbox Width: ");
+            Width = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter Player Hitbox Height: ");
+            Height = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter Player Hitbox Depth: ");
+            Depth = Convert.ToInt32(Console.ReadLine());
+
+            Player playerTwo = new Player(Width, Height, Depth, XPos, YPos, ZPos);
+
+            int playerOneOrPlayerTwo;
+            string directionToMove;
+            int distanceToMove;
+           
+
+            while (!playerOne.didTheyCollide(playerTwo))
             {
-                if (imageArray[i, j].Equals(replaceColor))
+
+                Console.WriteLine($"\nPlayer 1 is at ({playerOne.XPosition},{ playerOne.YPosition},{playerOne.ZPosition}) " +
+                    $"and Player 2 is at ({playerTwo.XPosition},{playerTwo.YPosition},{playerTwo.ZPosition})");
+                Console.WriteLine("Which one do you want to move?");
+                playerOneOrPlayerTwo = Convert.ToInt32(Console.ReadLine());
+
+                Console.WriteLine($"Which direction should Player {playerOneOrPlayerTwo} move (up, down, left, right, forward, or backword)?");
+                directionToMove = Console.ReadLine().ToUpper();
+
+                Console.WriteLine("How far should Player " + playerOneOrPlayerTwo + " move?");
+                distanceToMove = Convert.ToInt32(Console.ReadLine());
+
+                if (playerOneOrPlayerTwo == 1)
                 {
-                    imageArray[i,j] = newColor;
+                    MovePlayer(playerOne, directionToMove, distanceToMove);
+                } 
+                else 
+                {
+                    MovePlayer(playerTwo, directionToMove, distanceToMove);
                 }
             }
+            Console.WriteLine($"\nPlayer 1 is at ({playerOne.XPosition},{ playerOne.YPosition},{playerOne.ZPosition}) " +
+                $"and Player 2 is at ({playerTwo.XPosition},{playerTwo.YPosition},{playerTwo.ZPosition})");
+
+            Console.WriteLine("They collided!");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("\nWrong Input !!!");
+            Console.ReadLine();
         }
     }
-
-    public static void printXPixMap(string[] image_colors_array, string[,] image_pixels_array,
-        int image_width, int image_height)
+    public static void MovePlayer(Player playerToMove, string directionToMove, int distanceToMove)
     {
-        Console.WriteLine($"#define image_format 1");
-        Console.WriteLine($"#define image_width {image_width}");
-        Console.WriteLine($"#define image_height {image_height}");
-        Console.WriteLine($"#define image_ncolors {image_colors_array.Length-1}");
-        Console.WriteLine($"#define image_chars_per_pixel 1");
-        Console.WriteLine("static char *image_colors[] = {");
-        string commas = string.Empty;
-        for (int i = 0; i < image_colors_array.Length; i++)
+        switch (directionToMove)
         {
-            //if (i < image_colors_array.Length - 1)
-            //    commas = ",";
-            Console.WriteLine($"{image_colors_array[i]}{commas}");
+            case "RIGHT":
+                playerToMove.Move_X(distanceToMove);
+                break;
+            case "LEFT":
+                playerToMove.Move_X(-distanceToMove);
+                break;
+            case "UP":
+                playerToMove.Move_Y(distanceToMove);
+                break;
+            case "DOWN":
+                playerToMove.Move_Y(-distanceToMove);
+                break;
+            case "FORWARD":
+                playerToMove.Move_Z(distanceToMove);
+                break;
+            case "BACKWORD":
+                playerToMove.Move_Z(-distanceToMove);
+                break;
         }
-        Console.WriteLine("};");
-        Console.WriteLine("static char *image_pixels[] = {");
-        for (int i = 0; i < image_pixels_array.Length; i++)
-        {
-            for (int j = 0; j < image_pixels_array.Length; j++)
-            {
-                //if (i < image_pixels_array.Length - 1)
-                //    commas = ",";
-                Console.WriteLine($"{image_pixels_array[i,j]}{commas}");
-            }
-        }
-        Console.WriteLine("};");
+    }
+}
+class Player
+{
+    int width;
+    int height;
+    int depth;
+    int xPosition;
+    int yPosition;
+    int zPosition;
+    public int Width 
+    {
+        get { return width; } 
+        set { width = value; } 
+    }
+    public int Height {
+        get { return height; }
+        set { height = value; }
+    }
+    public int Depth {
+        get { return depth; }
+        set { depth = value; }
+    }
+    public int XPosition {
+        get { return xPosition; }
+        set { xPosition = value; }
+    }
+    public int YPosition {
+        get { return yPosition; }
+        set { yPosition = value; }
+    }
+    public int ZPosition
+    {
+        get { return zPosition; }
+        set { zPosition = value; }
+    }
+    public Player(int Width, int Height, int Depth, int XPos, int YPos, int ZPos)
+    {
+        this.Width = Width;
+        this.Height = Height;
+        this.Depth = Depth;
+        XPosition = XPos;
+        YPosition = YPos;
+        ZPosition = ZPos;
+    }
+    public void Move_X(int x_delta)
+    {
+        XPosition = XPosition + x_delta;
+    }
+    public void Move_Y(int y_delta)
+    {
+        YPosition = YPosition + y_delta;
+    }
+    public void Move_Z(int z_delta)
+    {
+        ZPosition = ZPosition + z_delta;
     }
 
-    public static bool checkIfValidColor(string[] arrayOfColors, string check4color)
+    public bool didTheyCollide(Player player2)
     {
-        foreach (string oneColor in arrayOfColors)
-        {
-            if(oneColor == check4color)
-            {
-                return true;
-            }
-        }
+        if (this.XPosition < (player2.XPosition + player2.Width) && (this.XPosition + this.Width) > player2.XPosition && 
+            this.YPosition < (player2.YPosition+ player2.Height) && (this.YPosition + this.Height) > player2.YPosition &&
+            this.ZPosition < (player2.ZPosition + player2.Depth) && (this.ZPosition + this.Depth) > player2.ZPosition)
+            return true;
         return false;
     }
-   
 }

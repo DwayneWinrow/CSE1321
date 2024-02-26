@@ -2,28 +2,73 @@
 
 public class Lab13A
 {
-    public static void  Main(String[] args)
+    public static void Main(String[] args)
     {
-        long getValue = 0;
-        for (int i = 0; i < 10; i++)
-        {
-            Console.Write($"Please enter number {i + 1}: ");
-            long checkValue = Convert.ToInt32(Console.ReadLine());
-            getValue = checkValue > getValue ? getValue = checkValue : getValue;
-        }
-        Console.WriteLine($"\nThe largest value was {getValue}\n");
-
-        //int x = 0;
-        //x = 9 % 5 * 3 + 6;
-        ////int x = 9 % 4;// / 2f;
-        //// int y = 8;
-        ////while(x<100)
-        ////{
-        ////    x *= 2;
-        ////    Console.WriteLine($"\n x=>  {x}\n");
-        ////}
-        //Console.WriteLine($"\n x=>  {x}\n");
-
+        BuildingBlueprint buildingOne = new BuildingBlueprint();
+        int secondStoriesforBuilding = 30;
+        int secondApartmentsforBuilding = 30;
+        float secondOccupanyforBuilding = .75f;
+        BuildingBlueprint buildingTwo = 
+            new BuildingBlueprint(secondStoriesforBuilding, secondApartmentsforBuilding, secondOccupanyforBuilding);
+        Console.WriteLine("Year 2020:");
+        PrintBuildInfo(1, buildingOne);
+        PrintBuildInfo(2, buildingTwo);
+        Console.WriteLine();
+        Console.WriteLine("Many years pass.");
+        Console.WriteLine();
+        buildingOne.OccupancyRate = 0;
+        buildingTwo.OccupancyRate = 1.0f;
+        Console.WriteLine("Year 2043:");
+        PrintBuildInfo(1, buildingOne);
+        PrintBuildInfo(2, buildingTwo);
+        Console.WriteLine();
+        Console.WriteLine("Looks like people prefer taller buildings.");
+        Console.WriteLine();
+    }
+    public static void PrintBuildInfo(int buildingNumber, BuildingBlueprint building)
+    {
+        Console.WriteLine($"Building {buildingNumber} has {building.NumberOfStories} floors, {building.NumberOfApartments} apartments, " +
+          $"and is {building.OccupancyRate * 100.00}% occupied. Full? {building.IsFullyOccupied.ToString().ToLower()}");
     }
 }
-
+public class BuildingBlueprint
+{
+    private int numberOfStories;
+    private int numberOfApartments;
+    private float occupancyRate;
+    private bool isFullyOccupied;
+    public BuildingBlueprint()
+    {
+        numberOfStories = 10;
+        numberOfApartments = 20;
+        occupancyRate = 1.0f;
+        isFullyOccupied = true;
+    }
+    public BuildingBlueprint(int inNumberOfStories, int inNumberOfApartments,float inOccupanyRate)
+    {
+        numberOfStories = inNumberOfStories;
+        numberOfApartments = inNumberOfApartments;
+        occupancyRate = inOccupanyRate;
+    }
+    public int NumberOfStories
+    {
+        get { return numberOfStories; }
+    }
+    public int NumberOfApartments
+    {
+        get { return numberOfApartments; }
+    }
+    public float OccupancyRate
+    {
+        get { return occupancyRate; }
+        set 
+        { 
+            occupancyRate = value;
+            isFullyOccupied = occupancyRate == 1;
+        }
+    }
+    public bool IsFullyOccupied
+    {
+        get { return isFullyOccupied; }
+    }
+}
